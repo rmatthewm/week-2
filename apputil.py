@@ -23,14 +23,26 @@ def ways(n):
     return n // 5 + 1
 
 def lowest_score(names, scores):
-    return None
+    """ Returns the name associated with the lowest score.
+
+    Args:
+        names (np.array(str)): a list of student names
+        scores (np.array(int)): a list of scores corresponding to the names
+
+    Returns:
+        str: the name of the student with the lowest score
+    """
+
+    # Find the index of the student with the lowest score
+    student_i = np.argmin(scores)
+
+    # Return the name of that student
+    return names[student_i]
 
 def sort_names(names, scores):
     return None
 
 # temp testing
-print(ways(12))
-print(ways(20))
-print(ways(3))
-print(ways(0))
-print(ways(127))
+names = np.array(['Bob', 'Alice', 'P', 'Q', 'R'])
+scores = np.array([5,1,4,2,3])
+print(lowest_score(names, scores))
