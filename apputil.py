@@ -3,16 +3,20 @@ import numpy as np
 
 # update/add code below ...
 
-def ways(n):
+def ways(n, coin_types=[5,1]):
     """ Returns the number of ways to give change using only
     pennies and nickles.
 
     Each group of 5 pennies can be replaced by a single nickle.
-    This gives n // 5 max number of nickles, which gives us the
-    number of combinations including nickles, leaving one last
-    case where we return only pennies. The base case of n = 0 
-    also holds true because there is only one way to not return
-    change.
+    This gives n // 5 max number of nickles, and n // 5 + 1 ways
+    to return change, because we also have the case with all pennies.
+
+    This can be extended to any combination of coins by using
+    recursion. This has horrible time complexity, but I couldn't
+    think of a better solution at this time. For each way of using
+    a larger coin, we have a number of ways to return the change that
+    is left over using the other coins. These can be summed to find the
+    total number of ways.
 
     Args:
         n (int): the amount of change to give in cents
@@ -20,7 +24,25 @@ def ways(n):
     Returns:
         int: the number of ways to return the change
     """
-    return n // 5 + 1
+
+    # Sort the coin types into descending order
+    coin_types.sort()
+    coin_types = coin_types[::-1]
+
+    # The base case is when we have only one coin type left. It doesn't
+    # matter if we can give exact change, because there is only one way
+    # to return it, assuming we have a rule to always round a certain way.
+    if len(coin_types) == 1:
+        return 1
+
+    # For each way that we can take out the largest coin, add the ways to
+    # return the remaining change using the other coins
+    ways_sum = 0
+    for i in range(0, n // coin_types[0] + 1):
+        ways_sum += ways(n - coin_types[0]*i, coin_types=coin_types[1:])
+
+    # Return the total number of ways
+    return ways_sum
 
 def lowest_score(names, scores):
     """ Returns the name associated with the lowest score.
@@ -55,8 +77,3 @@ def sort_names(names, scores):
     # To get descending order, we can reverse the array.
     sort_order_array = np.argsort(scores)[::-1]
     return names[sort_order_array]
-
-# temp testing
-names = np.array(['Bob', 'Alice', 'P', 'Q', 'R'])
-scores = np.array([1,5,2,4,3])
-print(sort_names(names, scores))
